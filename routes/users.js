@@ -28,7 +28,7 @@ exports.register = function(server, option, next) {
       config: {
         handler: function(request,reply) {
           var db = request.server.plugins['hapi-mongodb'].db;
-          var newUser = request.payload.newUser;
+          var newUser = request.payload.user;
 
           Bcrypt.genSalt(10, function(err, salt){
             Bcrypt.hash(newUser.password, salt, function(err, hash){
@@ -60,30 +60,13 @@ exports.register = function(server, option, next) {
         },
         validate: {
           payload: {
-            newUser: {
+            user: {
               username: Joi.string().min(3).max(20).required(),
               email: Joi.string().email().max(50).required(),
               password: Joi.string().min(5).max(20).required()
             }
           }
         }
-      }
-    },
-    {
-      method: 'GET',
-      path: '/user/{name}',
-      handler: function(request,reply) {
-        var db = request.server.plugins['hapi-mongodb'].db;
-        var username = request.params.name;
-
-        db.collection('users').findOne({'username': username}, function(err, users) {
-          if (err) { 
-            return reply('Internal MongoDB error', err);
-          }
-
-          reply(users);
-
-        });
       }
     }
 
