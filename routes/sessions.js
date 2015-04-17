@@ -1,5 +1,6 @@
 var Bcrypt = require('bcrypt');
 var Joi = require('joi');
+var Auth = require('./auth');
 
 exports.register = function(server, option, next) {
   // include routes
@@ -59,16 +60,29 @@ exports.register = function(server, option, next) {
       method: 'GET',
       path: '/authenticated',
       handler: function(request, reply) {
-        // retrieve the session information from the browser
-        var session = request.session.get('hapi_twitter_session');
-        var db = request.server.plugins['hapi-mongodb'].db;
-        db.collection('sessions').findOne({"session_id": session.session_key}, function(err, result) {
-          if (result === null) {
-            return reply({ "message": "Unauthenticated"});
-          } else {
-            return  reply({ "message": "Authenticated"});
-          }
+        Auth.authenticated(request, function(result){
+          reply(result);
         });
+      }
+    },
+    {
+      // logging out
+      method: "DELETE",
+      path: '/sessions',
+      handler: function(request,reply) {
+        // obtain the session
+        var session = request.session.get('hapi_twitter_session');
+        // initial db
+        var db = request.server.plugins['hapi-mongodb'].db;
+        // check if session exists
+        if (!session) {
+          return reply({ "message": "Already logged out"});
+        }
+        db.collection('sessions').remove({ "session_id": session.session_key},
+          function(err, writeResult){
+            if(err) { return reply('Internal MongoDB error', err)};
+            reply(writeResult);
+          })
       }
     }
   ]);
