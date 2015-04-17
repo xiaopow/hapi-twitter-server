@@ -79,10 +79,10 @@ exports.register = function(server, option, next) {
           return reply({ "message": "Already logged out"});
         }
         db.collection('sessions').remove({ "session_id": session.session_key},
-          function(err, writeResult){
-            if(err) { return reply('Internal MongoDB error', err)};
-            reply(writeResult);
-          })
+        function(err, writeResult){
+          if(err) { return reply('Internal MongoDB error', err)};
+          reply(writeResult);
+        });
       }
     }
   ]);
@@ -93,4 +93,4 @@ exports.register = function(server, option, next) {
 exports.register.attributes = {
   name: 'sessions-route',
   version: '0.0.1'
-}
+};

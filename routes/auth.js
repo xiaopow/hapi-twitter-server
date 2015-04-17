@@ -18,10 +18,10 @@ module.exports.authenticated = function(request, callback) {
         "authenticated": false
       });
     } else {
-      return  callback({ 
+      return callback({ 
         "message": "Authenticated",
         "authenticated": true
       });
     }
   });
-}
+};

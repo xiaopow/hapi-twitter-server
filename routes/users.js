@@ -22,6 +22,24 @@ exports.register = function(server, option, next) {
       }
     },
     {
+      // Retreive one user
+      method: 'GET',
+      path: '/users/{username}',
+      handler: function(request, reply) {
+        var username = encodeURIComponent(request.params.username);
+        var db = request.server.plugins['hapi-mongodb'].db;
+
+        db.collection('users').findOne({ "username": username }, function(err, user) {
+          if (err) { return reply('Internal MongoDB error', err); }
+          if (user === null) {
+            return reply({ "message": "Cannot find user with that username"});
+          }
+
+          reply(user);
+        })
+      }
+    },
+    {
       // Creating a user
       method: 'POST',
       path: '/users',
@@ -78,4 +96,4 @@ exports.register = function(server, option, next) {
 exports.register.attributes = {
   name: 'users-route',
   version: '0.0.1'
-}
+};
