@@ -34,7 +34,8 @@ exports.register = function(server, option, next) {
 
               var newSession = {
                 "session_id": randomkey,
-                "user_id": userMongo._id
+                "user_id": userMongo._id,
+                "username": userMongo.username
               };
 
               db.collection('sessions').insert(newSession, function(err, writeResult) {

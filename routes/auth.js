@@ -20,7 +20,8 @@ module.exports.authenticated = function(request, callback) {
     } else {
       return callback({ 
         "message": "Authenticated",
-        "authenticated": true
+        "authenticated": true,
+        "username": result.username
       });
     }
   });
