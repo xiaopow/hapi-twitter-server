@@ -45,9 +45,9 @@ exports.register = function(server, option, next) {
                 request.session.set('hapi_twitter_session', {
                   "session_key": randomkey,
                   "user_id": userMongo._id
-                })
+                });
                 reply(writeResult);
-              })
+              });
 
             } else {
               reply({ "message": "Not authorized" });

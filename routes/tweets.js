@@ -127,8 +127,8 @@ exports.register = function(server, option, next) {
       path: '/tweets/search/{keyword}',
       handler: function (request, reply) {
         var db = request.server.plugins['hapi-mongodb'].db; 
-        var keyword = { "$text": { "$search": request.params.keyword} };
-        db.collection('tweets').find(keyword).toArray(function(err, result){
+        var query = { "$text": { "$search": request.params.keyword} };
+        db.collection('tweets').find(query).toArray(function(err, result){
           if (err) throw err;
           reply(result);
         });
